@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fetch and Display Student Data</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f3f3f3;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #students {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 220px;
+            text-align: center;
+        }
+
+        .loading, .error {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Student Details</h1>
+
+    <div id="message" class="loading">Loading student data...</div>
+    <div id="students"></div>
+
+    <script>
+        const apiURL = "https://dummyjson.com/users"; 
+
+        async function fetchStudents() {
+            try {
+                const response = await fetch(apiURL);
+                if (!response.ok) throw new Error("Network response failed");
+
+                const data = await response.json();
+                displayStudents(data.users);
+            } 
+            catch (error) {
+                document.getElementById("message").innerHTML =
+                    "<div class='error'>Failed to load data ❌</div>";
+            }
+        }
+
+        function displayStudents(students) {
+            const container = document.getElementById("students");
+            document.getElementById("message").style.display = "none";
+
+            students.forEach(student => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+
+                card.innerHTML = `
+                    <h3>${student.firstName} ${student.lastName}</h3>
+                    <p><b>Age:</b> ${student.age}</p>
+                    <p><b>Email:</b> ${student.email}</p>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Fetch on page load
+        fetchStudents();
+    </script>
+
+</body>
+</html>
